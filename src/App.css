@@ -1,0 +1,570 @@
+/* ---------------------------------------------------------------
+   Design tokens
+   Palette: warm white paper, deep indigo ink, one indigo accent.
+   Green and amber appear only as deployment status, never as decoration.
+   --------------------------------------------------------------- */
+
+:root {
+  --paper: #fbfaf7;
+  --paper-sunk: #f3f1ec;
+  --ink: #16233a;
+  --ink-soft: #5a6478;
+  --ink-faint: #8b93a3;
+  --indigo: #24408e;
+  --indigo-wash: #eaeefa;
+  --rule: #e3e0d9;
+  --live: #2f6e4f;
+  --build: #9a6212;
+
+  --sans: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --rail-width: 17rem;
+  --measure: 62ch;
+}
+
+/* ---------------------------------------------------------------
+   Base
+   --------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Anchor links land below the sticky mobile bar rather than under it. */
+  scroll-padding-top: 5.5rem;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+p {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--indigo);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------
+   Shell: sticky rail on the left, content on the right
+   --------------------------------------------------------------- */
+
+.app {
+  display: grid;
+  grid-template-columns: var(--rail-width) minmax(0, 1fr);
+  gap: 4rem;
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: 0 2.5rem;
+}
+
+.rail {
+  position: relative;
+}
+
+.rail-inner {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  padding: 4.5rem 0;
+}
+
+.identity .name {
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.identity .role {
+  color: var(--ink-soft);
+}
+
+.identity .place {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--ink-faint);
+}
+
+.region {
+  display: block;
+  margin-top: 0.15rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+
+.rail-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  font-size: 0.94rem;
+  color: var(--ink-soft);
+}
+
+.rail-nav a:hover,
+.rail-links a:hover {
+  color: var(--indigo);
+}
+
+.rail-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.94rem;
+  color: var(--ink-soft);
+}
+
+/* ---------------------------------------------------------------
+   Content column
+   --------------------------------------------------------------- */
+
+.content {
+  min-width: 0;
+  padding: 4.5rem 0 6rem;
+}
+
+.section {
+  padding-top: 4.5rem;
+  margin-top: 4.5rem;
+  border-top: 1px solid var(--rule);
+}
+
+.section > h2 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink-faint);
+  letter-spacing: 0;
+  margin-bottom: 2rem;
+}
+
+.prose {
+  max-width: var(--measure);
+  color: var(--ink-soft);
+  display: grid;
+  gap: 1.1rem;
+}
+
+/* ---------------------------------------------------------------
+   Intro — the one place the page raises its voice
+   --------------------------------------------------------------- */
+
+.intro h1 {
+  max-width: 20ch;
+  font-size: clamp(2.1rem, 5.2vw, 3.5rem);
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.lede {
+  max-width: var(--measure);
+  margin-top: 1.75rem;
+  font-size: 1.075rem;
+  color: var(--ink-soft);
+}
+
+/* Project index: the substance, placed above everything else. */
+.index {
+  margin-top: 3rem;
+  border-top: 1px solid var(--rule);
+}
+
+.index li {
+  border-bottom: 1px solid var(--rule);
+}
+
+.index a {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 0.25rem 1.5rem;
+  padding: 0.95rem 0.5rem 0.95rem 0;
+  transition: background-color 0.15s ease, padding-left 0.15s ease;
+}
+
+.index a:hover {
+  background: var(--indigo-wash);
+  padding-left: 0.75rem;
+}
+
+.index-name {
+  font-weight: 600;
+}
+
+.index-stack {
+  grid-column: 1;
+  font-size: 0.875rem;
+  color: var(--ink-faint);
+}
+
+.index .status {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  align-self: center;
+}
+
+/* ---------------------------------------------------------------
+   Status: borrowed from health checks, used as real information
+   --------------------------------------------------------------- */
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex: none;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.status::before {
+  content: '';
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-live {
+  color: var(--live);
+}
+
+.status-build {
+  color: var(--build);
+}
+
+/* ---------------------------------------------------------------
+   Projects
+   --------------------------------------------------------------- */
+
+.projects {
+  display: grid;
+  gap: 2.5rem;
+}
+
+.project {
+  padding-left: 1.5rem;
+  border-left: 2px solid var(--rule);
+  scroll-margin-top: 6rem;
+}
+
+.project:first-child {
+  border-left-color: var(--indigo);
+}
+
+.project-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.project-head h3 {
+  font-size: 1.35rem;
+}
+
+.project-tagline {
+  margin-top: 0.2rem;
+  font-size: 0.94rem;
+  color: var(--ink-faint);
+}
+
+.project-summary {
+  max-width: var(--measure);
+  margin-top: 1rem;
+  color: var(--ink-soft);
+}
+
+.project-points {
+  max-width: var(--measure);
+  margin-top: 1.25rem;
+  display: grid;
+  gap: 0.7rem;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+.project-points li {
+  position: relative;
+  padding-left: 1.1rem;
+}
+
+.project-points li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 0.35rem;
+  height: 1px;
+  background: var(--ink-faint);
+}
+
+/* ---------------------------------------------------------------
+   Tags — shared by projects and skills
+   --------------------------------------------------------------- */
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1.35rem;
+}
+
+.tags li {
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: var(--paper-sunk);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+
+/* ---------------------------------------------------------------
+   Skills
+   --------------------------------------------------------------- */
+
+.skills {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 2rem;
+}
+
+.skill-group h3 {
+  font-size: 0.94rem;
+  color: var(--ink);
+}
+
+.skill-group .tags {
+  margin-top: 0.85rem;
+}
+
+/* ---------------------------------------------------------------
+   Credentials
+   --------------------------------------------------------------- */
+
+.certs {
+  border-top: 1px solid var(--rule);
+  max-width: 42rem;
+}
+
+.certs li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 0.15rem 1.5rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.cert-name {
+  font-weight: 600;
+  font-size: 0.98rem;
+}
+
+.cert-issuer {
+  grid-column: 1;
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+}
+
+.certs .status {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  align-self: center;
+}
+
+.education {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1.75rem;
+  margin-top: 2.5rem;
+}
+
+.school h3 {
+  font-size: 1rem;
+}
+
+.school p {
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  color: var(--ink-faint);
+}
+
+/* ---------------------------------------------------------------
+   Experience
+   --------------------------------------------------------------- */
+
+.job {
+  padding-left: 1.5rem;
+  border-left: 2px solid var(--rule);
+}
+
+.job-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.job-head h3 {
+  font-size: 1.15rem;
+}
+
+.job-org {
+  margin-top: 0.2rem;
+  font-size: 0.92rem;
+  color: var(--ink-faint);
+}
+
+.job-dates {
+  flex: none;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+
+/* ---------------------------------------------------------------
+   Contact
+   --------------------------------------------------------------- */
+
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.button {
+  padding: 0.6rem 1.15rem;
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  font-size: 0.94rem;
+  font-weight: 500;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.button:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.button.primary {
+  background: var(--indigo);
+  border-color: var(--indigo);
+  color: var(--paper);
+}
+
+.button.primary:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.foot {
+  margin-top: 5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+}
+
+/* ---------------------------------------------------------------
+   Responsive: the rail becomes a bar above the content
+   --------------------------------------------------------------- */
+
+@media (max-width: 60rem) {
+  .app {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    padding: 0 1.5rem;
+  }
+
+  .rail-inner {
+    position: static;
+    padding: 2.5rem 0 0;
+    gap: 1.5rem;
+  }
+
+  .rail-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+  }
+
+  .rail-links {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    padding-top: 1.25rem;
+  }
+
+  .content {
+    padding: 2.5rem 0 4rem;
+  }
+
+  .section {
+    padding-top: 3rem;
+    margin-top: 3rem;
+  }
+
+  .project-head,
+  .job-head {
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Respect reduced-motion preferences
+   --------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
