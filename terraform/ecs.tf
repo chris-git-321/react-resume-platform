@@ -34,6 +34,11 @@ resource "aws_security_group" "ecs_tasks" {
 
 resource "aws_ecs_cluster" "main" {
   name = "${var.project_name}-cluster"
+
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
 }
 
 resource "aws_ecs_task_definition" "app" {
