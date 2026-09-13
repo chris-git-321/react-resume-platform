@@ -20,6 +20,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Show context
+        env:
+          ROLE: ${{ secrets.AWS_ROLE_ARN }}
+        run: |
+          echo "repository: ${{ github.repository }}"
+          echo "ref: ${{ github.ref }}"
+          echo "event: ${{ github.event_name }}"
+          echo "role length: ${#ROLE}"
+
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -30,7 +39,6 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # Runners are x86; the ECS task definition expects ARM64.
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
