@@ -1,55 +1,41 @@
-name: Build and push image
+name: CI
 
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
-env:
-  AWS_REGION: ap-northeast-1
-  ECR_REPOSITORY: react-resume-platform
-
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
-  build:
+  app:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
-      - name: Show context
-        env:
-          ROLE: ${{ secrets.AWS_ROLE_ARN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+
+      - name: Build container image
+        run: docker build -t react-resume-platform:${{ github.sha }} .
+
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Check formatting
+        run: terraform fmt -check -recursive
+
+      - name: Validate configuration
+        working-directory: terraform
         run: |
-          echo "repository: ${{ github.repository }}"
-          echo "ref: ${{ github.ref }}"
-          echo "event: ${{ github.event_name }}"
-          echo "role length: ${#ROLE}"
-
-      - name: Configure AWS credentials via OIDC
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Log in to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build and push
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          platforms: linux/arm64
-          provenance: false
-          push: true
-          tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+          terraform init -backend=false
+          terraform validate
