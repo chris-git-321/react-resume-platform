@@ -1,3 +1,39 @@
+terraform {
+  required_version = ">= 1.9"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.70"
+    }
+  }
+}
+
+provider "aws" {
+  region = var.region
+
+  default_tags {
+    tags = {
+      Project   = var.project_name
+      ManagedBy = "Terraform"
+    }
+  }
+}
+
+data "aws_caller_identity" "current" {}
+
+variable "region" {
+  description = "AWS region"
+  type        = string
+  default     = "ap-northeast-1"
+}
+
+variable "project_name" {
+  description = "Name prefix applied to resources"
+  type        = string
+  default     = "react-resume-platform"
+}
+
 variable "github_repo" {
   description = "GitHub repository allowed to assume the role, as owner/name"
   type        = string
