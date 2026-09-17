@@ -6,9 +6,7 @@ This project is also being developed as a hands-on cloud engineering project. Th
 
 ## Current Status
 
-The React/Vite application and portfolio content are complete.
-
-The AWS deployment is currently in development.
+Completed.
 
 ## Technology Stack
 
