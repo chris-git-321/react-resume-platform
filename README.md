@@ -43,5 +43,3 @@ Completed.
 - GitHub Actions
 
 - Git
-
-- GitHub Actions OIDC
